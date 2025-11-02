@@ -1,0 +1,2016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RedKart - Your Shopping Destination</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes logoGlow {
+            0% { filter: drop-shadow(0 0 5px rgba(220, 38, 38, 0.3)); }
+            50% { filter: drop-shadow(0 0 15px rgba(220, 38, 38, 0.6)); }
+            100% { filter: drop-shadow(0 0 5px rgba(220, 38, 38, 0.3)); }
+        }
+        
+        .slide-in { animation: slideIn 0.6s ease-out; }
+        .fade-in { animation: fadeIn 0.8s ease-out; }
+        .bounce-animation { animation: bounce 2s infinite; }
+        .pulse-animation { animation: pulse 2s infinite; }
+        .logo-glow { animation: logoGlow 3s infinite; }
+        
+        .product-card {
+            transition: all 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .cart-slide {
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .cart-slide.open {
+            transform: translateX(0);
+        }
+        
+        .notification {
+            transform: translateY(-100px);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateY(0);
+        }
+        
+        .auth-form {
+            transition: all 0.3s ease;
+        }
+        
+        .auth-form.hidden {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Notification -->
+    <div id="notification" class="notification fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+        <span id="notificationText">Item added to cart!</span>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-red-600 text-white shadow-lg sticky top-0 z-40">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-3">
+                        <!-- RedKart Logo -->
+                        <svg width="48" height="48" viewBox="0 0 48 48" class="logo-glow">
+                            <!-- Shopping cart base -->
+                            <rect x="8" y="32" width="32" height="8" rx="2" fill="#dc2626" stroke="#b91c1c" stroke-width="1"/>
+                            <!-- Cart handle -->
+                            <path d="M6 8 L12 8 L16 28 L36 28" stroke="#dc2626" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                            <!-- Cart grid pattern -->
+                            <rect x="10" y="34" width="28" height="4" fill="#b91c1c" opacity="0.3"/>
+                            <line x1="14" y1="32" x2="14" y2="40" stroke="#b91c1c" stroke-width="1"/>
+                            <line x1="18" y1="32" x2="18" y2="40" stroke="#b91c1c" stroke-width="1"/>
+                            <line x1="22" y1="32" x2="22" y2="40" stroke="#b91c1c" stroke-width="1"/>
+                            <line x1="26" y1="32" x2="26" y2="40" stroke="#b91c1c" stroke-width="1"/>
+                            <line x1="30" y1="32" x2="30" y2="40" stroke="#b91c1c" stroke-width="1"/>
+                            <line x1="34" y1="32" x2="34" y2="40" stroke="#b91c1c" stroke-width="1"/>
+                            <!-- Wheels -->
+                            <circle cx="18" cy="42" r="3" fill="#dc2626"/>
+                            <circle cx="32" cy="42" r="3" fill="#dc2626"/>
+                            <circle cx="18" cy="42" r="1.5" fill="#ffffff"/>
+                            <circle cx="32" cy="42" r="1.5" fill="#ffffff"/>
+                            <!-- Items in cart -->
+                            <rect x="16" y="18" width="6" height="8" rx="1" fill="#fbbf24" stroke="#f59e0b" stroke-width="1"/>
+                            <rect x="24" y="15" width="6" height="11" rx="1" fill="#34d399" stroke="#10b981" stroke-width="1"/>
+                            <rect x="32" y="20" width="4" height="6" rx="1" fill="#60a5fa" stroke="#3b82f6" stroke-width="1"/>
+                            <!-- Brand accent -->
+                            <path d="M38 8 L42 12 L38 16 L34 12 Z" fill="#dc2626"/>
+                            <circle cx="38" cy="12" r="2" fill="#ffffff"/>
+                        </svg>
+                        <h1 class="text-3xl font-bold text-white">RedKart</h1>
+                    </div>
+                    <nav class="hidden md:flex space-x-6">
+                        <a href="#" onclick="showSection('home')" class="hover:text-red-200 transition-colors">Home</a>
+                        <a href="#" onclick="showSection('products')" class="hover:text-red-200 transition-colors">Products</a>
+                        <a href="#" onclick="showSection('orders')" class="hover:text-red-200 transition-colors">My Orders</a>
+                        <a href="#" onclick="showSection('categories')" class="hover:text-red-200 transition-colors">Categories</a>
+                    </nav>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <input type="text" id="searchInput" placeholder="Search products..." 
+                               class="px-4 py-2 rounded-lg text-gray-800 w-64 focus:outline-none focus:ring-2 focus:ring-red-300">
+                        <button onclick="searchProducts()" class="absolute right-2 top-2 text-gray-600 hover:text-gray-800">
+                            🔍
+                        </button>
+                    </div>
+                    
+                    <button onclick="toggleCart()" class="relative bg-red-700 hover:bg-red-800 px-4 py-2 rounded-lg transition-colors">
+                         Cart (<span id="cartCount">0</span>)
+                    </button>
+                    
+                    <!-- Authentication Button -->
+                    <div id="authButtons">
+                        <button onclick="showSection('auth')" class="bg-red-700 hover:bg-red-800 px-6 py-2 rounded-lg transition-colors font-semibold">
+                             Login
+                        </button>
+                    </div>
+                    
+                    <!-- User Menu (hidden by default) -->
+                    <div id="userMenu" class="hidden flex items-center space-x-4">
+                        <span id="welcomeUser" class="text-white"></span>
+                        <button onclick="showSection('profile')" class="bg-red-700 hover:bg-red-800 px-4 py-2 rounded-lg transition-colors">
+                            👤 Profile
+                        </button>
+                        <button onclick="signOut()" class="bg-red-700 hover:bg-red-800 px-4 py-2 rounded-lg transition-colors">
+                            Sign Out
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Home Section -->
+        <section id="homeSection" class="fade-in">
+            <!-- Hero Banner -->
+            <div class="bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-2xl p-12 mb-8 relative overflow-hidden">
+                <div class="relative z-10 flex items-center justify-between">
+                    <div>
+                        <h2 class="text-5xl font-bold mb-4 slide-in">Welcome to RedKart!</h2>
+                        <p class="text-xl mb-6 fade-in">Discover amazing products at unbeatable prices</p>
+                        <button onclick="showSection('products')" class="bg-white text-red-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors bounce-animation">
+                            Shop Now
+                        </button>
+                    </div>
+                    <!-- Large Logo in Hero -->
+                    <div class="hidden lg:block">
+                        <svg width="120" height="120" viewBox="0 0 48 48" class="logo-glow opacity-20">
+                            <!-- Shopping cart base -->
+                            <rect x="8" y="32" width="32" height="8" rx="2" fill="#ffffff" stroke="#f3f4f6" stroke-width="1"/>
+                            <!-- Cart handle -->
+                            <path d="M6 8 L12 8 L16 28 L36 28" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                            <!-- Cart grid pattern -->
+                            <rect x="10" y="34" width="28" height="4" fill="#f3f4f6" opacity="0.3"/>
+                            <line x1="14" y1="32" x2="14" y2="40" stroke="#f3f4f6" stroke-width="1"/>
+                            <line x1="18" y1="32" x2="18" y2="40" stroke="#f3f4f6" stroke-width="1"/>
+                            <line x1="22" y1="32" x2="22" y2="40" stroke="#f3f4f6" stroke-width="1"/>
+                            <line x1="26" y1="32" x2="26" y2="40" stroke="#f3f4f6" stroke-width="1"/>
+                            <line x1="30" y1="32" x2="30" y2="40" stroke="#f3f4f6" stroke-width="1"/>
+                            <line x1="34" y1="32" x2="34" y2="40" stroke="#f3f4f6" stroke-width="1"/>
+                            <!-- Wheels -->
+                            <circle cx="18" cy="42" r="3" fill="#ffffff"/>
+                            <circle cx="32" cy="42" r="3" fill="#ffffff"/>
+                            <circle cx="18" cy="42" r="1.5" fill="#dc2626"/>
+                            <circle cx="32" cy="42" r="1.5" fill="#dc2626"/>
+                            <!-- Items in cart -->
+                            <rect x="16" y="18" width="6" height="8" rx="1" fill="#fbbf24" stroke="#f59e0b" stroke-width="1"/>
+                            <rect x="24" y="15" width="6" height="11" rx="1" fill="#34d399" stroke="#10b981" stroke-width="1"/>
+                            <rect x="32" y="20" width="4" height="6" rx="1" fill="#60a5fa" stroke="#3b82f6" stroke-width="1"/>
+                            <!-- Brand accent -->
+                            <path d="M38 8 L42 12 L38 16 L34 12 Z" fill="#ffffff"/>
+                            <circle cx="38" cy="12" r="2" fill="#dc2626"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full -mr-32 -mt-32"></div>
+            </div>
+
+            <!-- Featured Categories -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow product-card">
+                    <div class="text-4xl"><img src="https://media.istockphoto.com/id/993760082/photo/3d-set-of-home-appliances-on-white-background.jpg?s=612x612&w=0&k=20&c=HrfQd_TbAHORYDu29Z-o9538X05OSw0flSPIZdi-aMQ=" alt="fashion" class="w-50 h-50 object-contain" />
+</div>
+
+                    <h3 class="text-xl font-semibold mb-2">Electronics</h3>
+                    <p class="text-gray-600 mb-4">Latest gadgets and tech</p>
+                    <button onclick="filterByCategory('electronics')" class="text-red-600 font-semibold hover:text-red-800">
+                        Explore →
+                    </button>
+                </div>
+                
+
+
+                <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow product-card">
+                    <div class="text-4xl mb-4"><img src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8ZmFzaGlvbnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=600" alt="fashion" class="w-50 h-50 object-contain" />
+</div>
+                    <h3 class="text-xl font-semibold mb-2">Fashion</h3>
+                    <p class="text-gray-600 mb-4">Trendy clothes & accessories</p>
+                    <button onclick="filterByCategory('fashion')" class="text-red-600 font-semibold hover:text-red-800">
+                        Explore →
+                    </button>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow product-card">
+                    <div class="text-4xl mb-4"><img src="https://media.istockphoto.com/id/1096669284/photo/cooking-time.jpg?s=612x612&w=0&k=20&c=vL6xuUoU02HMS6FwoWCD8orpdJe9c7-ags6cbakYdkQ=" alt="fashion" class="w-50 h-50 object-contain" /></div>
+                    <h3 class="text-xl font-semibold mb-2">Home & Living</h3>
+                    <p class="text-gray-600 mb-4">Beautiful home essentials</p>
+                    <button onclick="filterByCategory('home')" class="text-red-600 font-semibold hover:text-red-800">
+                        Explore →
+                    </button>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="bg-gray-800 text-white rounded-xl mt-12 p-8">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-4">
+                            <!-- Footer Logo -->
+                            <svg width="32" height="32" viewBox="0 0 48 48">
+                                <rect x="8" y="32" width="32" height="8" rx="2" fill="#dc2626"/>
+                                <path d="M6 8 L12 8 L16 28 L36 28" stroke="#dc2626" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="18" cy="42" r="3" fill="#dc2626"/>
+                                <circle cx="32" cy="42" r="3" fill="#dc2626"/>
+                                <circle cx="18" cy="42" r="1.5" fill="#ffffff"/>
+                                <circle cx="32" cy="42" r="1.5" fill="#ffffff"/>
+                                <rect x="16" y="18" width="6" height="8" rx="1" fill="#fbbf24"/>
+                                <rect x="24" y="15" width="6" height="11" rx="1" fill="#34d399"/>
+                                <rect x="32" y="20" width="4" height="6" rx="1" fill="#60a5fa"/>
+                            </svg>
+                            <h3 class="text-xl font-bold">RedKart</h3>
+                        </div>
+                        <p class="text-gray-300 mb-4">Your trusted shopping destination for quality products at amazing prices.</p>
+                        <div class="flex space-x-4">
+                            <a href="#" class="text-gray-300 hover:text-white transition-colors">📘</a>
+                            <a href="#" class="text-gray-300 hover:text-white transition-colors">🐦</a>
+                            <a href="#" class="text-gray-300 hover:text-white transition-colors">📷</a>
+                            <a href="#" class="text-gray-300 hover:text-white transition-colors">💼</a>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-semibold mb-4">Quick Links</h4>
+                        <ul class="space-y-2 text-gray-300">
+                            <li><a href="#" onclick="showSection('products')" class="hover:text-white transition-colors">All Products</a></li>
+                            <li><a href="#" onclick="filterByCategory('electronics')" class="hover:text-white transition-colors">Electronics</a></li>
+                            <li><a href="#" onclick="filterByCategory('fashion')" class="hover:text-white transition-colors">Fashion</a></li>
+                            <li><a href="#" onclick="filterByCategory('home')" class="hover:text-white transition-colors">Home & Living</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-semibold mb-4">Customer Service</h4>
+                        <ul class="space-y-2 text-gray-300">
+                            <li><a href="#" onclick="showSection('orders')" class="hover:text-white transition-colors">Track Your Order</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors">Return Policy</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors">Help Center</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors">Contact Us</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-semibold mb-4">Contact Info</h4>
+                        <div class="space-y-2 text-gray-300">
+                            <p>📞 1-800-REDKART</p>
+                            <p>✉️ support@redkart.com</p>
+                            <p>📍 123 Shopping St, Commerce City</p>
+                            <p>🕒 24/7 Customer Support</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
+                    <p>&copy; 2024 RedKart. All rights reserved. | Privacy Policy | Terms of Service</p>
+                </div>
+            </footer>
+        </section>
+
+        <!-- Products Section -->
+        <section id="productsSection" class="hidden">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold text-gray-800">Our Products</h2>
+                <div class="flex space-x-4">
+                    <select id="sortSelect" onchange="sortProducts()" class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                        <option value="name">Sort by Name</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="rating">Rating</option>
+                    </select>
+                    <select id="categoryFilter" onchange="filterProducts()" class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                        <option value="all">All Categories</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="fashion">Fashion</option>
+                        <option value="home">Home & Living</option>
+                        <option value="books">Books</option>
+                        <option value="sports">Sports & Fitness</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="productsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Products will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Categories Section -->
+        <section id="categoriesSection" class="hidden">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-3xl font-bold text-gray-800 mb-8">Shop by Categories</h2>
+                
+                <!-- Electronics Category -->
+                <div class="mb-12">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12">
+  <img src="https://example.com/images/electronics-icon.png" alt="Electronics" class="w-full h-full object-contain" />
+</div>
+
+                            <div>
+                                <h3 class="text-2xl font-bold text-gray-800">Electronics</h3>
+                                <p class="text-gray-600">Latest gadgets and technology</p>
+                            </div>
+                        </div>
+                        <button onclick="filterByCategory('electronics')" class="text-red-600 hover:text-red-800 font-semibold">
+                            View All →
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="electronicsGrid">
+                        <!-- Electronics products will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Fashion Category -->
+                <div class="mb-12">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center space-x-4">
+                            <div class="text-4xl">👕</div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-gray-800">Fashion</h3>
+                                <p class="text-gray-600">Trendy clothes and accessories</p>
+                            </div>
+                        </div>
+                        <button onclick="filterByCategory('fashion')" class="text-red-600 hover:text-red-800 font-semibold">
+                            View All →
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="fashionGrid">
+                        <!-- Fashion products will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Home & Living Category -->
+                <div class="mb-12">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center space-x-4">
+                            <div class="text-4xl">🏠</div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-gray-800">Home & Living</h3>
+                                <p class="text-gray-600">Beautiful home essentials</p>
+                            </div>
+                        </div>
+                        <button onclick="filterByCategory('home')" class="text-red-600 hover:text-red-800 font-semibold">
+                            View All →
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="homeGrid">
+                        <!-- Home products will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Books Category -->
+                <div class="mb-12">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center space-x-4">
+                            <div class="text-4xl">📚</div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-gray-800">Books</h3>
+                                <p class="text-gray-600">Knowledge and entertainment</p>
+                            </div>
+                        </div>
+                        <button onclick="filterByCategory('books')" class="text-red-600 hover:text-red-800 font-semibold">
+                            View All →
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="booksGrid">
+                        <!-- Books will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Sports Category -->
+                <div class="mb-12">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center space-x-4">
+                            <div class="text-4xl">⚽</div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-gray-800">Sports & Fitness</h3>
+                                <p class="text-gray-600">Stay active and healthy</p>
+                            </div>
+                        </div>
+                        <button onclick="filterByCategory('sports')" class="text-red-600 hover:text-red-800 font-semibold">
+                            View All →
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="sportsGrid">
+                        <!-- Sports products will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Orders Section -->
+        <section id="ordersSection" class="hidden">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-gray-800 mb-8">My Orders & Tracking</h2>
+                
+                <!-- Order Search -->
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                    <h3 class="text-xl font-semibold mb-4">Track Your Order</h3>
+                    <div class="flex space-x-4">
+                        <input type="text" id="orderTrackingInput" placeholder="Enter Order ID (e.g., ABC123XYZ)" 
+                               class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                        <button onclick="trackOrder()" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors">
+                            Track Order
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Order Tracking Result -->
+                <div id="trackingResult" class="hidden bg-white rounded-xl shadow-lg p-6 mb-8">
+                    <h3 class="text-xl font-semibold mb-4">Order Status</h3>
+                    <div id="trackingDetails"></div>
+                </div>
+
+                <!-- Orders List -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-semibold">Order History</h3>
+                        <select id="orderFilter" onchange="filterOrders()" class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                            <option value="all">All Orders</option>
+                            <option value="processing">Processing</option>
+                            <option value="shipped">Shipped</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    
+                    <div id="ordersList" class="space-y-6">
+                        <!-- Orders will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Authentication Section -->
+        <section id="authSection" class="hidden">
+            <div class="min-h-screen bg-gradient-to-br from-red-50 via-pink-50 to-purple-50 flex items-center justify-center p-4">
+                <div class="max-w-4xl w-full">
+                    <!-- Main Auth Container -->
+                    <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+                        <div class="flex flex-col lg:flex-row">
+                            <!-- Left Side - Branding -->
+                            <div class="lg:w-1/2 bg-gradient-to-br from-red-600 via-red-500 to-pink-500 p-12 flex flex-col justify-center items-center text-white relative overflow-hidden">
+                                <!-- Background Pattern -->
+                                <div class="absolute inset-0 opacity-10">
+                                    <div class="absolute top-10 left-10 w-20 h-20 border-2 border-white rounded-full"></div>
+                                    <div class="absolute top-32 right-16 w-16 h-16 border-2 border-white rounded-full"></div>
+                                    <div class="absolute bottom-20 left-20 w-12 h-12 border-2 border-white rounded-full"></div>
+                                    <div class="absolute bottom-32 right-10 w-24 h-24 border-2 border-white rounded-full"></div>
+                                </div>
+                                
+                                <div class="relative z-10 text-center">
+                                    <!-- Large Logo -->
+                                    <div class="mb-8">
+                                        <svg width="120" height="120" viewBox="0 0 48 48" class="logo-glow mx-auto">
+                                            <rect x="8" y="32" width="32" height="8" rx="2" fill="#ffffff" stroke="#f3f4f6" stroke-width="1"/>
+                                            <path d="M6 8 L12 8 L16 28 L36 28" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <rect x="10" y="34" width="28" height="4" fill="#f3f4f6" opacity="0.3"/>
+                                            <line x1="14" y1="32" x2="14" y2="40" stroke="#f3f4f6" stroke-width="1"/>
+                                            <line x1="18" y1="32" x2="18" y2="40" stroke="#f3f4f6" stroke-width="1"/>
+                                            <line x1="22" y1="32" x2="22" y2="40" stroke="#f3f4f6" stroke-width="1"/>
+                                            <line x1="26" y1="32" x2="26" y2="40" stroke="#f3f4f6" stroke-width="1"/>
+                                            <line x1="30" y1="32" x2="30" y2="40" stroke="#f3f4f6" stroke-width="1"/>
+                                            <line x1="34" y1="32" x2="34" y2="40" stroke="#f3f4f6" stroke-width="1"/>
+                                            <circle cx="18" cy="42" r="3" fill="#ffffff"/>
+                                            <circle cx="32" cy="42" r="3" fill="#ffffff"/>
+                                            <circle cx="18" cy="42" r="1.5" fill="#dc2626"/>
+                                            <circle cx="32" cy="42" r="1.5" fill="#dc2626"/>
+                                            <rect x="16" y="18" width="6" height="8" rx="1" fill="#fbbf24" stroke="#f59e0b" stroke-width="1"/>
+                                            <rect x="24" y="15" width="6" height="11" rx="1" fill="#34d399" stroke="#10b981" stroke-width="1"/>
+                                            <rect x="32" y="20" width="4" height="6" rx="1" fill="#60a5fa" stroke="#3b82f6" stroke-width="1"/>
+                                            <path d="M38 8 L42 12 L38 16 L34 12 Z" fill="#ffffff"/>
+                                            <circle cx="38" cy="12" r="2" fill="#dc2626"/>
+                                        </svg>
+                                    </div>
+                                    
+                                    <h1 class="text-4xl font-bold mb-4">Welcome to RedKart</h1>
+                                    <p class="text-xl opacity-90 mb-8">Your ultimate shopping destination</p>
+                                    
+                                    <div class="space-y-4 text-left max-w-sm mx-auto">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                                <span class="text-sm">🛒</span>
+                                            </div>
+                                            <span>Shop from thousands of products</span>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                                <span class="text-sm">🚚</span>
+                                            </div>
+                                            <span>Fast and reliable delivery</span>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                                <span class="text-sm">💳</span>
+                                            </div>
+                                            <span>Secure payment options</span>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                                <span class="text-sm">⭐</span>
+                                            </div>
+                                            <span>Customer reviews & ratings</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Right Side - Forms -->
+                            <div class="lg:w-1/2 p-12">
+                                <!-- Toggle Buttons -->
+                                <div class="flex bg-gray-100 rounded-xl p-1 mb-8">
+                                    <button id="signInTab" onclick="switchAuthMode('signin')" 
+                                            class="flex-1 py-3 px-6 rounded-lg font-semibold transition-all duration-300 bg-red-600 text-white shadow-md">
+                                        Sign In
+                                    </button>
+                                    <button id="signUpTab" onclick="switchAuthMode('signup')" 
+                                            class="flex-1 py-3 px-6 rounded-lg font-semibold transition-all duration-300 text-gray-600 hover:text-gray-800">
+                                        Sign Up
+                                    </button>
+                                </div>
+                                
+                                <!-- Sign In Form -->
+                                <div id="signInForm" class="auth-form">
+                                    <div class="text-center mb-8">
+                                        <h2 class="text-3xl font-bold text-gray-800 mb-2">Welcome Back!</h2>
+                                        <p class="text-gray-600">Sign in to continue your shopping journey</p>
+                                    </div>
+                                    
+                                    <form onsubmit="handlePageSignIn(event)" class="space-y-6">
+                                        <div class="space-y-4">
+                                            <div class="relative">
+                                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                    <span class="text-gray-400">📧</span>
+                                                </div>
+                                                <input type="email" id="pageSignInEmail" required 
+                                                       class="w-full pl-10 pr-4 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
+                                                       placeholder="Enter your email">
+                                            </div>
+                                            
+                                            <div class="relative">
+                                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                    <span class="text-gray-400">🔒</span>
+                                                </div>
+                                                <input type="password" id="pageSignInPassword" required 
+                                                       class="w-full pl-10 pr-4 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
+                                                       placeholder="Enter your password">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex items-center justify-between">
+                                            <label class="flex items-center">
+                                                <input type="checkbox" class="rounded border-gray-300 text-red-600 focus:ring-red-500">
+                                                <span class="ml-2 text-sm text-gray-600">Remember me</span>
+                                            </label>
+                                            <a href="#" class="text-sm text-red-600 hover:text-red-800 font-medium">Forgot password?</a>
+                                        </div>
+                                        
+                                        <button type="submit" class="w-full bg-gradient-to-r from-red-600 to-red-500 text-white py-4 rounded-xl hover:from-red-700 hover:to-red-600 transition-all duration-300 font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                                            Sign In to RedKart
+                                        </button>
+                                    </form>
+                                </div>
+                                
+                                <!-- Sign Up Form -->
+                                <div id="signUpForm" class="auth-form hidden">
+                                    <div class="text-center mb-8">
+                                        <h2 class="text-3xl font-bold text-gray-800 mb-2">Join RedKart!</h2>
+                                        <p class="text-gray-600">Create your account and start shopping</p>
+                                    </div>
+                                    
+                                    <form onsubmit="handlePageSignUp(event)" class="space-y-6">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div class="relative">
+                                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                    <span class="text-gray-400">👤</span>
+                                                </div>
+                                                <input type="text" id="pageSignUpName" required 
+                                                       class="w-full pl-10 pr-4 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
+                                                       placeholder="Full name">
+                                            </div>
+                                            
+                                            <div class="relative">
+                                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                    <span class="text-gray-400">📱</span>
+                                                </div>
+                                                <input type="tel" id="pageSignUpPhone" required 
+                                                       class="w-full pl-10 pr-4 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
+                                                       placeholder="Phone number">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="relative">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <span class="text-gray-400">📧</span>
+                                            </div>
+                                            <input type="email" id="pageSignUpEmail" required 
+                                                   class="w-full pl-10 pr-4 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
+                                                   placeholder="Email address">
+                                        </div>
+                                        
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div class="relative">
+                                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                    <span class="text-gray-400">🔒</span>
+                                                </div>
+                                                <input type="password" id="pageSignUpPassword" required 
+                                                       class="w-full pl-10 pr-4 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
+                                                       placeholder="Password">
+                                            </div>
+                                            
+                                            <div class="relative">
+                                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                    <span class="text-gray-400">🔒</span>
+                                                </div>
+                                                <input type="password" id="pageSignUpConfirmPassword" required 
+                                                       class="w-full pl-10 pr-4 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
+                                                       placeholder="Confirm password">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex items-start">
+                                            <input type="checkbox" id="agreeTerms" required class="mt-1 rounded border-gray-300 text-red-600 focus:ring-red-500">
+                                            <label for="agreeTerms" class="ml-3 text-sm text-gray-600 leading-relaxed">
+                                                I agree to RedKart's <a href="#" class="text-red-600 hover:text-red-800 font-medium">Terms of Service</a> and 
+                                                <a href="#" class="text-red-600 hover:text-red-800 font-medium">Privacy Policy</a>
+                                            </label>
+                                        </div>
+                                        
+                                        <button type="submit" class="w-full bg-gradient-to-r from-red-600 to-red-500 text-white py-4 rounded-xl hover:from-red-700 hover:to-red-600 transition-all duration-300 font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                                            Create RedKart Account
+                                        </button>
+                                    </form>
+                                </div>
+                                
+                                <!-- Social Login -->
+                                <div class="mt-8">
+                                    <div class="relative">
+                                        <div class="absolute inset-0 flex items-center">
+                                            <div class="w-full border-t border-gray-300"></div>
+                                        </div>
+                                        <div class="relative flex justify-center text-sm">
+                                            <span class="px-4 bg-white text-gray-500 font-medium">Or continue with</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-6 grid grid-cols-2 gap-4">
+                                        <button class="w-full flex items-center justify-center py-3 px-4 border border-gray-300 rounded-xl shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all duration-300 hover:shadow-md">
+                                            <svg class="mr-2 w-5 h-5" viewBox="0 0 24 24">
+                                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                                            </svg>
+                                            Google
+                                        </button>
+                                        <button class="w-full flex items-center justify-center py-3 px-4 border border-gray-300 rounded-xl shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all duration-300 hover:shadow-md">
+                                            <span class="mr-2 text-lg">📘</span>
+                                            Facebook
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Back to Home -->
+                                <div class="mt-8 text-center">
+                                    <button onclick="showSection('home')" class="text-gray-500 hover:text-gray-700 font-medium transition-colors duration-300">
+                                        ← Back to RedKart Home
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Profile Section -->
+        <section id="profileSection" class="hidden">
+            <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">My Profile</h2>
+                
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                        <input type="text" id="userName" value="John Doe" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" id="userEmail" value="john@example.com" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                        <input type="tel" id="userPhone" value="+1 234 567 8900" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                        <textarea id="userAddress" rows="3" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">123 Main St, City, State 12345</textarea>
+                    </div>
+                    
+                    <button onclick="saveProfile()" class="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition-colors">
+                        Save Changes
+                    </button>
+                </div>
+                
+                <div class="mt-8 pt-8 border-t">
+                    <h3 class="text-xl font-semibold mb-4">Order History</h3>
+                    <div id="orderHistory" class="space-y-4">
+                        <!-- Order history will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Shopping Cart Sidebar -->
+    <div id="cartSidebar" class="cart-slide fixed right-0 top-0 h-full w-96 bg-white shadow-2xl z-50 overflow-y-auto">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold">Shopping Cart</h3>
+                <button onclick="toggleCart()" class="text-gray-500 hover:text-gray-700 text-2xl">×</button>
+            </div>
+            
+            <div id="cartItems" class="space-y-4 mb-6">
+                <!-- Cart items will be loaded here -->
+            </div>
+            
+            <div class="border-t pt-4">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-xl font-semibold">Total:</span>
+                    <span id="cartTotal" class="text-2xl font-bold text-red-600">$0.00</span>
+                </div>
+                
+                <button onclick="checkout()" class="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition-colors mb-3">
+                    Proceed to Checkout
+                </button>
+                
+                <button onclick="clearCart()" class="w-full bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400 transition-colors">
+                    Clear Cart
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sign In Modal -->
+    <div id="signInModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-60 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-md w-full">
+            <div class="p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold">Sign In</h3>
+                    <button onclick="closeSignIn()" class="text-gray-500 hover:text-gray-700 text-2xl">×</button>
+                </div>
+                
+                <form id="signInForm" onsubmit="handleSignIn(event)">
+                    <div class="space-y-4">
+                        <input type="email" id="signInEmail" placeholder="Email" required 
+                               class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                        <input type="password" id="signInPassword" placeholder="Password" required 
+                               class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                        <button type="submit" class="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition-colors">
+                            Sign In
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="mt-6 text-center">
+                    <p class="text-gray-600">Don't have an account? 
+                        <button onclick="switchToSignUp()" class="text-red-600 hover:text-red-800 font-semibold">Sign Up</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sign Up Modal -->
+    <div id="signUpModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-60 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-md w-full">
+            <div class="p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold">Sign Up</h3>
+                    <button onclick="closeSignUp()" class="text-gray-500 hover:text-gray-700 text-2xl">×</button>
+                </div>
+                
+                <form id="signUpForm" onsubmit="handleSignUp(event)">
+                    <div class="space-y-4">
+                        <input type="text" id="signUpName" placeholder="Full Name" required 
+                               class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                        <input type="email" id="signUpEmail" placeholder="Email" required 
+                               class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                        <input type="tel" id="signUpPhone" placeholder="Phone Number" required 
+                               class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                        <input type="password" id="signUpPassword" placeholder="Password" required 
+                               class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                        <input type="password" id="signUpConfirmPassword" placeholder="Confirm Password" required 
+                               class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                        <button type="submit" class="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition-colors">
+                            Sign Up
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="mt-6 text-center">
+                    <p class="text-gray-600">Already have an account? 
+                        <button onclick="switchToSignIn()" class="text-red-600 hover:text-red-800 font-semibold">Sign In</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Feedback Modal -->
+    <div id="feedbackModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-60 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-4xl w-full max-h-screen overflow-y-auto">
+            <div class="p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold">Product Reviews & Feedback</h3>
+                    <button onclick="closeFeedback()" class="text-gray-500 hover:text-gray-700 text-2xl">×</button>
+                </div>
+                
+                <div id="feedbackContent">
+                    <!-- Feedback content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkoutModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-60 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-2xl w-full max-h-screen overflow-y-auto">
+            <div class="p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold">Checkout</h3>
+                    <button onclick="closeCheckout()" class="text-gray-500 hover:text-gray-700 text-2xl">×</button>
+                </div>
+                
+                <form id="checkoutForm" onsubmit="processOrder(event)">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <h4 class="text-lg font-semibold mb-4">Shipping Information</h4>
+                            <div class="space-y-4">
+                                <input type="text" placeholder="Full Name" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                                <input type="email" placeholder="Email" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                                <input type="tel" placeholder="Phone" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                                <textarea placeholder="Address" rows="3" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"></textarea>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="text-lg font-semibold mb-4">Payment Method</h4>
+                            <div class="space-y-4">
+                                <label class="flex items-center">
+                                    <input type="radio" name="payment" value="cod" checked class="mr-2">
+                                    Cash on Delivery
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="payment" value="card" class="mr-2">
+                                    Credit/Debit Card
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="payment" value="upi" class="mr-2">
+                                    UPI Payment
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t pt-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <span class="text-xl font-semibold">Order Total:</span>
+                            <span id="checkoutTotal" class="text-2xl font-bold text-red-600">$0.00</span>
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition-colors">
+                            Place Order
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample product data
+        const products = [
+            // Electronics
+            { id: 1, name: "iPhone 14 Pro", price: 999, category: "electronics", rating: 4.8,image: "📱" , description: "Latest iPhone with advanced features" },
+            { id: 2, name: "Samsung Galaxy S23", price: 899, category: "electronics", rating: 4.7, image: "📱", description: "Powerful Android smartphone" },
+            { id: 3, name: "MacBook Air M2", price: 1299, category: "electronics", rating: 4.9, image: "💻", description: "Ultra-thin laptop with M2 chip" },
+            { id: 7, name: "Smart TV 55\"", price: 599, category: "electronics", rating: 4.6, image: "📺", description: "4K Ultra HD Smart Television" },
+            { id: 8, name: "Wireless Headphones", price: 199, category: "electronics", rating: 4.7, image: "🎧", description: "Noise-cancelling wireless headphones" },
+            { id: 12, name: "Fitness Tracker", price: 149, category: "electronics", rating: 4.4, image: "⌚", description: "Advanced fitness tracking device" },
+            { id: 13, name: "iPad Pro", price: 799, category: "electronics", rating: 4.8, image: "📱", description: "Professional tablet with M2 chip" },
+            { id: 14, name: "Gaming Console", price: 499, category: "electronics", rating: 4.7, image: "🎮", description: "Next-gen gaming console" },
+            
+            // Fashion
+            { id: 4, name: "Nike Air Max", price: 129, category: "fashion", rating: 4.5, image: "👟", description: "Comfortable running shoes" },
+            { id: 5, name: "Levi's Jeans", price: 79, category: "fashion", rating: 4.3, image: "👖", description: "Classic denim jeans" },
+            { id: 9, name: "Designer Handbag", price: 249, category: "fashion", rating: 4.5, image: "👜", description: "Luxury leather handbag" },
+            { id: 15, name: "Leather Jacket", price: 199, category: "fashion", rating: 4.6, image: "🧥", description: "Premium leather jacket" },
+            { id: 16, name: "Silk Dress", price: 159, category: "fashion", rating: 4.4, image: "👗", description: "Elegant silk evening dress" },
+            { id: 17, name: "Designer Watch", price: 299, category: "fashion", rating: 4.7, image: "⌚", description: "Luxury timepiece" },
+            { id: 18, name: "Sunglasses", price: 89, category: "fashion", rating: 4.3, image: "🕶️", description: "UV protection sunglasses" },
+            { id: 19, name: "Winter Boots", price: 149, category: "fashion", rating: 4.5, image: "🥾", description: "Waterproof winter boots" },
+            
+            // Home & Living
+            { id: 6, name: "Coffee Maker", price: 89, category: "home", rating: 4.4, image: "☕", description: "Automatic coffee brewing machine" },
+            { id: 10, name: "Kitchen Blender", price: 69, category: "home", rating: 4.2, image: "🥤", description: "High-speed kitchen blender" },
+            { id: 11, name: "Gaming Chair", price: 299, category: "home", rating: 4.6, image: "🪑", description: "Ergonomic gaming chair" },
+            { id: 20, name: "Air Purifier", price: 199, category: "home", rating: 4.5, image: "💨", description: "HEPA air purification system" },
+            { id: 21, name: "Robot Vacuum", price: 349, category: "home", rating: 4.6, image: "🤖", description: "Smart robotic vacuum cleaner" },
+            { id: 22, name: "Dining Table", price: 599, category: "home", rating: 4.4, image: "🪑", description: "Solid wood dining table" },
+            { id: 23, name: "Bed Sheets Set", price: 79, category: "home", rating: 4.3, image: "🛏️", description: "Premium cotton bed sheets" },
+            { id: 24, name: "Kitchen Knife Set", price: 129, category: "home", rating: 4.7, image: "🔪", description: "Professional chef knife set" },
+            
+            // Books
+            { id: 25, name: "The Great Gatsby", price: 12, category: "books", rating: 4.5, image: "📖", description: "Classic American literature" },
+            { id: 26, name: "Programming Guide", price: 45, category: "books", rating: 4.7, image: "💻", description: "Complete programming handbook" },
+            { id: 27, name: "Cooking Masterclass", price: 29, category: "books", rating: 4.6, image: "👨‍🍳", description: "Professional cooking techniques" },
+            { id: 28, name: "Mystery Novel", price: 15, category: "books", rating: 4.4, image: "🕵️", description: "Thrilling detective story" },
+            { id: 29, name: "Self-Help Guide", price: 18, category: "books", rating: 4.3, image: "💪", description: "Personal development book" },
+            { id: 30, name: "Art History", price: 39, category: "books", rating: 4.5, image: "🎨", description: "Comprehensive art history" },
+            { id: 31, name: "Science Encyclopedia", price: 55, category: "books", rating: 4.8, image: "🔬", description: "Complete science reference" },
+            { id: 32, name: "Travel Guide", price: 25, category: "books", rating: 4.4, image: "🗺️", description: "World travel destinations" },
+            
+            // Sports & Fitness
+            { id: 33, name: "Yoga Mat", price: 35, category: "sports", rating: 4.5, image: "🧘", description: "Non-slip yoga mat" },
+            { id: 34, name: "Dumbbells Set", price: 89, category: "sports", rating: 4.6, image: "🏋️", description: "Adjustable weight dumbbells" },
+            { id: 35, name: "Tennis Racket", price: 129, category: "sports", rating: 4.4, image: "🎾", description: "Professional tennis racket" },
+            { id: 36, name: "Basketball", price: 29, category: "sports", rating: 4.3, image: "🏀", description: "Official size basketball" },
+            { id: 37, name: "Running Shoes", price: 119, category: "sports", rating: 4.7, image: "👟", description: "Lightweight running shoes" },
+            { id: 38, name: "Bicycle", price: 399, category: "sports", rating: 4.5, image: "🚴", description: "Mountain bike with gears" },
+            { id: 39, name: "Swimming Goggles", price: 25, category: "sports", rating: 4.2, image: "🥽", description: "Anti-fog swimming goggles" },
+            { id: 40, name: "Protein Powder", price: 49, category: "sports", rating: 4.4, image: "🥤", description: "Whey protein supplement" }
+        ];
+
+        let cart = [];
+        let currentSection = 'home';
+        let filteredProducts = [...products];
+
+        // Sample feedback data
+        const productFeedback = {
+            1: [
+                { user: "John D.", rating: 5, comment: "Amazing phone! Camera quality is outstanding.", date: "2024-01-15", verified: true },
+                { user: "Sarah M.", rating: 4, comment: "Great performance but battery could be better.", date: "2024-01-10", verified: true },
+                { user: "Mike R.", rating: 5, comment: "Best iPhone I've ever owned. Highly recommended!", date: "2024-01-08", verified: false }
+            ],
+            2: [
+                { user: "Lisa K.", rating: 5, comment: "Excellent Android phone with great features.", date: "2024-01-12", verified: true },
+                { user: "Tom B.", rating: 4, comment: "Good value for money. Fast and reliable.", date: "2024-01-05", verified: true }
+            ],
+            3: [
+                { user: "Alex P.", rating: 5, comment: "Perfect for work and creative tasks. M2 chip is incredible!", date: "2024-01-14", verified: true },
+                { user: "Emma W.", rating: 5, comment: "Lightweight yet powerful. Best laptop purchase ever.", date: "2024-01-09", verified: true }
+            ]
+        };
+
+        let currentUser = null;
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProducts();
+            updateCartUI();
+            loadOrderHistory();
+            checkUserSession();
+        });
+
+        // Generate star rating display
+        function generateStarRating(rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 >= 0.5;
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+            
+            let starsHTML = '';
+            
+            // Full stars
+            for (let i = 0; i < fullStars; i++) {
+                starsHTML += '<span class="text-yellow-400 text-lg">★</span>';
+            }
+            
+            // Half star
+            if (hasHalfStar) {
+                starsHTML += '<span class="text-yellow-400 text-lg">☆</span>';
+            }
+            
+            // Empty stars
+            for (let i = 0; i < emptyStars; i++) {
+                starsHTML += '<span class="text-gray-300 text-lg">☆</span>';
+            }
+            
+            return starsHTML;
+        }
+
+        // Section navigation
+        function showSection(section) {
+            // Hide all sections
+            document.getElementById('homeSection').classList.add('hidden');
+            document.getElementById('productsSection').classList.add('hidden');
+            document.getElementById('categoriesSection').classList.add('hidden');
+            document.getElementById('ordersSection').classList.add('hidden');
+            document.getElementById('profileSection').classList.add('hidden');
+            document.getElementById('authSection').classList.add('hidden');
+            
+            // Show selected section
+            document.getElementById(section + 'Section').classList.remove('hidden');
+            currentSection = section;
+            
+            if (section === 'products') {
+                loadProducts();
+            } else if (section === 'categories') {
+                loadCategoriesPage();
+            } else if (section === 'orders') {
+                loadOrdersPage();
+            } else if (section === 'auth') {
+                // Default to sign in mode
+                switchAuthMode('signin');
+            }
+        }
+
+        // Authentication mode switching
+        function switchAuthMode(mode) {
+            const signInTab = document.getElementById('signInTab');
+            const signUpTab = document.getElementById('signUpTab');
+            const signInForm = document.getElementById('signInForm');
+            const signUpForm = document.getElementById('signUpForm');
+            
+            if (mode === 'signin') {
+                signInTab.className = 'flex-1 py-3 px-6 rounded-lg font-semibold transition-all duration-300 bg-red-600 text-white shadow-md';
+                signUpTab.className = 'flex-1 py-3 px-6 rounded-lg font-semibold transition-all duration-300 text-gray-600 hover:text-gray-800';
+                signInForm.classList.remove('hidden');
+                signUpForm.classList.add('hidden');
+            } else {
+                signUpTab.className = 'flex-1 py-3 px-6 rounded-lg font-semibold transition-all duration-300 bg-red-600 text-white shadow-md';
+                signInTab.className = 'flex-1 py-3 px-6 rounded-lg font-semibold transition-all duration-300 text-gray-600 hover:text-gray-800';
+                signUpForm.classList.remove('hidden');
+                signInForm.classList.add('hidden');
+            }
+        }
+
+        // Show auth page with sign up mode
+        function showAuthSignUp() {
+            showSection('auth');
+            switchAuthMode('signup');
+        }
+
+        // Load and display products
+        function loadProducts() {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = '';
+            
+            filteredProducts.forEach((product, index) => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card bg-white rounded-xl shadow-lg overflow-hidden fade-in';
+                productCard.style.animationDelay = `${index * 0.1}s`;
+                
+                productCard.innerHTML = `
+                    <div class="p-6">
+                        <div class="text-6xl mb-4 text-center">${product.image}</div>
+                        <h3 class="text-lg font-semibold mb-2">${product.name}</h3>
+                        <p class="text-gray-600 text-sm mb-3">${product.description}</p>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center">
+                                ${generateStarRating(product.rating)}
+                                <span class="text-gray-400 ml-1">(${product.rating})</span>
+                            </div>
+                            <button onclick="showProductFeedback(${product.id})" 
+                                    class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                View Reviews & Feedback
+                            </button>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-red-600">$${product.price}</span>
+                            <button onclick="addToCart(${product.id})" 
+                                    class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                grid.appendChild(productCard);
+            });
+        }
+
+        // Add product to cart
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+            
+            updateCartUI();
+            showNotification('Item added to cart!');
+        }
+
+        // Update cart UI
+        function updateCartUI() {
+            const cartCount = document.getElementById('cartCount');
+            const cartItems = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+            
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            cartCount.textContent = totalItems;
+            cartTotal.textContent = `$${totalPrice.toFixed(2)}`;
+            
+            cartItems.innerHTML = '';
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p class="text-gray-500 text-center py-8">Your cart is empty</p>';
+                return;
+            }
+            
+            cart.forEach(item => {
+                const cartItem = document.createElement('div');
+                cartItem.className = 'flex items-center space-x-4 p-4 border rounded-lg';
+                cartItem.innerHTML = `
+                    <div class="text-3xl">${item.image}</div>
+                    <div class="flex-1">
+                        <h4 class="font-semibold">${item.name}</h4>
+                        <p class="text-gray-600">$${item.price}</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="updateQuantity(${item.id}, -1)" class="bg-gray-200 px-2 py-1 rounded">-</button>
+                        <span class="px-3">${item.quantity}</span>
+                        <button onclick="updateQuantity(${item.id}, 1)" class="bg-gray-200 px-2 py-1 rounded">+</button>
+                    </div>
+                    <button onclick="removeFromCart(${item.id})" class="text-red-500 hover:text-red-700">🗑️</button>
+                `;
+                cartItems.appendChild(cartItem);
+            });
+        }
+
+        // Update item quantity
+        function updateQuantity(productId, change) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    removeFromCart(productId);
+                } else {
+                    updateCartUI();
+                }
+            }
+        }
+
+        // Remove item from cart
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCartUI();
+            showNotification('Item removed from cart');
+        }
+
+        // Clear entire cart
+        function clearCart() {
+            cart = [];
+            updateCartUI();
+            showNotification('Cart cleared');
+        }
+
+        // Toggle cart sidebar
+        function toggleCart() {
+            const sidebar = document.getElementById('cartSidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        // Search products
+        function searchProducts() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            filteredProducts = products.filter(product => 
+                product.name.toLowerCase().includes(searchTerm) ||
+                product.description.toLowerCase().includes(searchTerm)
+            );
+            
+            if (currentSection === 'products') {
+                loadProducts();
+            } else {
+                showSection('products');
+            }
+        }
+
+        // Filter products by category
+        function filterProducts() {
+            const category = document.getElementById('categoryFilter').value;
+            if (category === 'all') {
+                filteredProducts = [...products];
+            } else {
+                filteredProducts = products.filter(product => product.category === category);
+            }
+            loadProducts();
+        }
+
+        // Filter by category (from home page)
+        function filterByCategory(category) {
+            document.getElementById('categoryFilter').value = category;
+            filterProducts();
+            showSection('products');
+        }
+
+        // Sort products
+        function sortProducts() {
+            const sortBy = document.getElementById('sortSelect').value;
+            
+            switch(sortBy) {
+                case 'name':
+                    filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'price-low':
+                    filteredProducts.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-high':
+                    filteredProducts.sort((a, b) => b.price - a.price);
+                    break;
+                case 'rating':
+                    filteredProducts.sort((a, b) => b.rating - a.rating);
+                    break;
+            }
+            
+            loadProducts();
+        }
+
+        // Show notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            
+            notificationText.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Checkout process
+        function checkout() {
+            if (cart.length === 0) {
+                showNotification('Your cart is empty!');
+                return;
+            }
+            
+            const modal = document.getElementById('checkoutModal');
+            const checkoutTotal = document.getElementById('checkoutTotal');
+            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            checkoutTotal.textContent = `$${totalPrice.toFixed(2)}`;
+            modal.classList.remove('hidden');
+        }
+
+        function closeCheckout() {
+            document.getElementById('checkoutModal').classList.add('hidden');
+        }
+
+        function processOrder(event) {
+            event.preventDefault();
+            
+            // Simulate order processing
+            const orderId = Math.random().toString(36).substr(2, 9).toUpperCase();
+            const orderTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            // Save order to history with random status for demo
+            const statuses = ['Processing', 'Shipped', 'Out for Delivery', 'Delivered'];
+            const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+            
+            const order = {
+                id: orderId,
+                date: new Date().toLocaleDateString(),
+                items: [...cart],
+                total: orderTotal,
+                status: randomStatus
+            };
+            
+            let orderHistory = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+            orderHistory.unshift(order);
+            localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
+            
+            // Clear cart and close modal
+            clearCart();
+            closeCheckout();
+            toggleCart();
+            
+            showNotification(`Order #${orderId} placed successfully!`);
+            loadOrderHistory();
+        }
+
+        // Profile management
+        function saveProfile() {
+            const profile = {
+                name: document.getElementById('userName').value,
+                email: document.getElementById('userEmail').value,
+                phone: document.getElementById('userPhone').value,
+                address: document.getElementById('userAddress').value
+            };
+            
+            localStorage.setItem('userProfile', JSON.stringify(profile));
+            showNotification('Profile saved successfully!');
+        }
+
+        // Load order history
+        function loadOrderHistory() {
+            const orderHistory = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+            const container = document.getElementById('orderHistory');
+            
+            if (orderHistory.length === 0) {
+                container.innerHTML = '<p class="text-gray-500">No orders yet</p>';
+                return;
+            }
+            
+            container.innerHTML = orderHistory.map(order => `
+                <div class="border rounded-lg p-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <h4 class="font-semibold">Order #${order.id}</h4>
+                            <p class="text-sm text-gray-600">${order.date}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-semibold">$${order.total.toFixed(2)}</p>
+                            <p class="text-sm text-green-600">${order.status}</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-600">${order.items.length} items</p>
+                </div>
+            `).join('');
+        }
+
+        // Load saved profile on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+            if (savedProfile.name) {
+                document.getElementById('userName').value = savedProfile.name;
+                document.getElementById('userEmail').value = savedProfile.email;
+                document.getElementById('userPhone').value = savedProfile.phone;
+                document.getElementById('userAddress').value = savedProfile.address;
+            }
+        });
+
+        // Categories page functionality
+        function loadCategoriesPage() {
+            loadCategoryProducts('electronics', 'electronicsGrid', 4);
+            loadCategoryProducts('fashion', 'fashionGrid', 4);
+            loadCategoryProducts('home', 'homeGrid', 4);
+            loadCategoryProducts('books', 'booksGrid', 4);
+            loadCategoryProducts('sports', 'sportsGrid', 4);
+        }
+
+        function loadCategoryProducts(category, gridId, limit = null) {
+            const categoryProducts = products.filter(product => product.category === category);
+            const productsToShow = limit ? categoryProducts.slice(0, limit) : categoryProducts;
+            const grid = document.getElementById(gridId);
+            
+            if (!grid) return;
+            
+            grid.innerHTML = '';
+            
+            productsToShow.forEach((product, index) => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card bg-white rounded-xl shadow-lg overflow-hidden fade-in';
+                productCard.style.animationDelay = `${index * 0.1}s`;
+                
+                productCard.innerHTML = `
+                    <div class="p-6">
+                        <div class="text-5xl mb-4 text-center">${product.image}</div>
+                        <h3 class="text-lg font-semibold mb-2">${product.name}</h3>
+                        <p class="text-gray-600 text-sm mb-3">${product.description}</p>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center">
+                                ${generateStarRating(product.rating)}
+                                <span class="text-gray-400 ml-1">(${product.rating})</span>
+                            </div>
+                            <button onclick="showProductFeedback(${product.id})" 
+                                    class="text-blue-600 hover:text-blue-800 text-xs font-medium">
+                                Reviews
+                            </button>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xl font-bold text-red-600">$${product.price}</span>
+                            <button onclick="addToCart(${product.id})" 
+                                    class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                grid.appendChild(productCard);
+            });
+        }
+
+        // Order tracking and management functions
+        function loadOrdersPage() {
+            loadDetailedOrderHistory();
+        }
+
+        function trackOrder() {
+            const orderId = document.getElementById('orderTrackingInput').value.trim().toUpperCase();
+            if (!orderId) {
+                showNotification('Please enter an Order ID');
+                return;
+            }
+
+            const orderHistory = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+            const order = orderHistory.find(o => o.id === orderId);
+            
+            const trackingResult = document.getElementById('trackingResult');
+            const trackingDetails = document.getElementById('trackingDetails');
+            
+            if (order) {
+                // Simulate realistic tracking stages
+                const trackingStages = getTrackingStages(order);
+                
+                trackingDetails.innerHTML = `
+                    <div class="border rounded-lg p-4 mb-4">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h4 class="text-lg font-semibold">Order #${order.id}</h4>
+                                <p class="text-gray-600">Placed on ${order.date}</p>
+                                <p class="text-gray-600">${order.items.length} items • $${order.total.toFixed(2)}</p>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}">
+                                ${order.status}
+                            </span>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            ${trackingStages.map(stage => `
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-4 h-4 rounded-full ${stage.completed ? 'bg-green-500' : stage.current ? 'bg-blue-500' : 'bg-gray-300'}"></div>
+                                    <div class="flex-1">
+                                        <p class="font-medium ${stage.completed || stage.current ? 'text-gray-800' : 'text-gray-400'}">${stage.title}</p>
+                                        <p class="text-sm ${stage.completed || stage.current ? 'text-gray-600' : 'text-gray-400'}">${stage.description}</p>
+                                        ${stage.date ? `<p class="text-xs text-gray-500">${stage.date}</p>` : ''}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="mt-6 pt-4 border-t">
+                            <h5 class="font-semibold mb-2">Items in this order:</h5>
+                            <div class="space-y-2">
+                                ${order.items.map(item => `
+                                    <div class="flex items-center space-x-3 text-sm">
+                                        <span class="text-2xl">${item.image}</span>
+                                        <span>${item.name} × ${item.quantity}</span>
+                                        <span class="text-gray-600">$${(item.price * item.quantity).toFixed(2)}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                trackingResult.classList.remove('hidden');
+                showNotification('Order found! Tracking details loaded.');
+            } else {
+                trackingDetails.innerHTML = `
+                    <div class="text-center py-8">
+                        <div class="text-6xl mb-4">📦</div>
+                        <h4 class="text-lg font-semibold mb-2">Order Not Found</h4>
+                        <p class="text-gray-600">We couldn't find an order with ID: ${orderId}</p>
+                        <p class="text-sm text-gray-500 mt-2">Please check your order ID and try again.</p>
+                    </div>
+                `;
+                trackingResult.classList.remove('hidden');
+                showNotification('Order not found');
+            }
+        }
+
+        function getTrackingStages(order) {
+            const stages = [
+                { title: 'Order Placed', description: 'Your order has been received and confirmed', completed: true, date: order.date },
+                { title: 'Processing', description: 'We are preparing your items for shipment', completed: false, current: false },
+                { title: 'Shipped', description: 'Your order is on its way', completed: false, current: false },
+                { title: 'Out for Delivery', description: 'Your order is out for delivery', completed: false, current: false },
+                { title: 'Delivered', description: 'Your order has been delivered', completed: false, current: false }
+            ];
+
+            const statusIndex = {
+                'Processing': 1,
+                'Shipped': 2,
+                'Out for Delivery': 3,
+                'Delivered': 4
+            };
+
+            const currentIndex = statusIndex[order.status] || 1;
+            
+            for (let i = 0; i <= currentIndex; i++) {
+                if (i < currentIndex) {
+                    stages[i].completed = true;
+                } else if (i === currentIndex) {
+                    stages[i].current = true;
+                }
+            }
+
+            return stages;
+        }
+
+        function getStatusColor(status) {
+            const colors = {
+                'Processing': 'bg-yellow-100 text-yellow-800',
+                'Shipped': 'bg-blue-100 text-blue-800',
+                'Out for Delivery': 'bg-purple-100 text-purple-800',
+                'Delivered': 'bg-green-100 text-green-800',
+                'Cancelled': 'bg-red-100 text-red-800'
+            };
+            return colors[status] || 'bg-gray-100 text-gray-800';
+        }
+
+        function loadDetailedOrderHistory() {
+            const orderHistory = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+            const container = document.getElementById('ordersList');
+            
+            if (orderHistory.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="text-6xl mb-4">🛒</div>
+                        <h3 class="text-xl font-semibold mb-2">No Orders Yet</h3>
+                        <p class="text-gray-600 mb-4">Start shopping to see your orders here!</p>
+                        <button onclick="showSection('products')" class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors">
+                            Start Shopping
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = orderHistory.map(order => `
+                <div class="border rounded-lg p-6 hover:shadow-lg transition-shadow">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h4 class="text-lg font-semibold">Order #${order.id}</h4>
+                            <p class="text-gray-600">Placed on ${order.date}</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}">
+                                ${order.status}
+                            </span>
+                            <p class="text-lg font-semibold mt-1">$${order.total.toFixed(2)}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <h5 class="font-medium mb-2">Items (${order.items.length}):</h5>
+                            <div class="space-y-1">
+                                ${order.items.slice(0, 3).map(item => `
+                                    <div class="flex items-center space-x-2 text-sm">
+                                        <span class="text-lg">${item.image}</span>
+                                        <span>${item.name} × ${item.quantity}</span>
+                                    </div>
+                                `).join('')}
+                                ${order.items.length > 3 ? `<p class="text-sm text-gray-500">+${order.items.length - 3} more items</p>` : ''}
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col justify-end">
+                            <div class="space-y-2">
+                                <button onclick="trackSpecificOrder('${order.id}')" class="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors">
+                                    Track Order
+                                </button>
+                                <button onclick="reorderItems('${order.id}')" class="w-full bg-gray-200 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors">
+                                    Reorder Items
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function trackSpecificOrder(orderId) {
+            document.getElementById('orderTrackingInput').value = orderId;
+            trackOrder();
+        }
+
+        function reorderItems(orderId) {
+            const orderHistory = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+            const order = orderHistory.find(o => o.id === orderId);
+            
+            if (order) {
+                order.items.forEach(item => {
+                    const existingItem = cart.find(cartItem => cartItem.id === item.id);
+                    if (existingItem) {
+                        existingItem.quantity += item.quantity;
+                    } else {
+                        cart.push({ ...item });
+                    }
+                });
+                
+                updateCartUI();
+                showNotification(`${order.items.length} items added to cart!`);
+                toggleCart();
+            }
+        }
+
+        function filterOrders() {
+            const filter = document.getElementById('orderFilter').value;
+            const orderHistory = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+            
+            let filteredOrders = orderHistory;
+            if (filter !== 'all') {
+                filteredOrders = orderHistory.filter(order => order.status.toLowerCase() === filter);
+            }
+            
+            // Temporarily update localStorage for display
+            const originalHistory = localStorage.getItem('orderHistory');
+            localStorage.setItem('orderHistory', JSON.stringify(filteredOrders));
+            loadDetailedOrderHistory();
+            localStorage.setItem('orderHistory', originalHistory);
+        }
+
+        // Handle search on Enter key
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchProducts();
+            }
+        });
+
+        // Authentication functions
+        function showSignIn() {
+            document.getElementById('signInModal').classList.remove('hidden');
+        }
+
+        function closeSignIn() {
+            document.getElementById('signInModal').classList.add('hidden');
+        }
+
+        function showSignUp() {
+            document.getElementById('signUpModal').classList.remove('hidden');
+        }
+
+        function closeSignUp() {
+            document.getElementById('signUpModal').classList.add('hidden');
+        }
+
+        function switchToSignUp() {
+            closeSignIn();
+            showSignUp();
+        }
+
+        function switchToSignIn() {
+            closeSignUp();
+            showSignIn();
+        }
+
+        function handleSignIn(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('signInEmail').value;
+            const password = document.getElementById('signInPassword').value;
+            
+            // Simple validation (in real app, this would be server-side)
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                updateAuthUI();
+                closeSignIn();
+                showNotification(`Welcome back, ${user.name}!`);
+            } else {
+                showNotification('Invalid email or password');
+            }
+        }
+
+        function handleSignUp(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('signUpName').value;
+            const email = document.getElementById('signUpEmail').value;
+            const phone = document.getElementById('signUpPhone').value;
+            const password = document.getElementById('signUpPassword').value;
+            const confirmPassword = document.getElementById('signUpConfirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                showNotification('Passwords do not match');
+                return;
+            }
+            
+            // Check if user already exists
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            if (users.find(u => u.email === email)) {
+                showNotification('User with this email already exists');
+                return;
+            }
+            
+            // Create new user
+            const newUser = { name, email, phone, password, joinDate: new Date().toLocaleDateString() };
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            currentUser = newUser;
+            localStorage.setItem('currentUser', JSON.stringify(newUser));
+            updateAuthUI();
+            closeSignUp();
+            showNotification(`Welcome to RedKart, ${name}!`);
+        }
+
+        function signOut() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            updateAuthUI();
+            showNotification('Signed out successfully');
+        }
+
+        function checkUserSession() {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                updateAuthUI();
+            }
+        }
+
+        function updateAuthUI() {
+            const authButtons = document.getElementById('authButtons');
+            const userMenu = document.getElementById('userMenu');
+            const welcomeUser = document.getElementById('welcomeUser');
+            
+            if (currentUser) {
+                authButtons.classList.add('hidden');
+                userMenu.classList.remove('hidden');
+                welcomeUser.textContent = `Hello, ${currentUser.name}`;
+                
+                // Update profile form with user data
+                document.getElementById('userName').value = currentUser.name;
+                document.getElementById('userEmail').value = currentUser.email;
+                document.getElementById('userPhone').value = currentUser.phone || '';
+            } else {
+                authButtons.classList.remove('hidden');
+                userMenu.classList.add('hidden');
+            }
+        }
+
+        // Product feedback functions
+        function showProductFeedback(productId) {
+            const product = products.find(p => p.id === productId);
+            const feedback = productFeedback[productId] || [];
+            
+            const modal = document.getElementById('feedbackModal');
+            const content = document.getElementById('feedbackContent');
+            
+            content.innerHTML = `
+                <div class="mb-6">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div class="text-4xl">${product.image}</div>
+                        <div>
+                            <h4 class="text-xl font-semibold">${product.name}</h4>
+                            <div class="flex items-center space-x-2">
+                                ${generateStarRating(product.rating)}
+                                <span class="text-gray-600">(${product.rating} out of 5)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                ${currentUser ? `
+                <div class="bg-gray-50 rounded-lg p-6 mb-6">
+                    <h5 class="font-semibold mb-4">Write a Review</h5>
+                    <form onsubmit="submitFeedback(event, ${productId})">
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2">Your Rating</label>
+                            <div class="flex space-x-2">
+                                ${[1,2,3,4,5].map(star => `
+                                    <button type="button" onclick="setRating(${star})" 
+                                            class="rating-star text-2xl text-gray-300 hover:text-yellow-400 transition-colors" 
+                                            data-rating="${star}">☆</button>
+                                `).join('')}
+                            </div>
+                            <input type="hidden" id="userRating" value="5">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2">Your Review</label>
+                            <textarea id="userComment" rows="4" placeholder="Share your experience with this product..." 
+                                      class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"></textarea>
+                        </div>
+                        <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors">
+                            Submit Review
+                        </button>
+                    </form>
+                </div>
+                ` : `
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                    <p class="text-blue-800">
+                        <button onclick="closeFeedback(); showSignIn();" class="text-blue-600 hover:text-blue-800 font-semibold">Sign in</button> 
+                        to write a review for this product.
+                    </p>
+                </div>
+                `}
+                
+                <div class="space-y-6">
+                    <h5 class="font-semibold text-lg">Customer Reviews (${feedback.length})</h5>
+                    
+                    ${feedback.length === 0 ? `
+                        <div class="text-center py-8 text-gray-500">
+                            <div class="text-4xl mb-2">💬</div>
+                            <p>No reviews yet. Be the first to review this product!</p>
+                        </div>
+                    ` : feedback.map(review => `
+                        <div class="border-b pb-4">
+                            <div class="flex justify-between items-start mb-2">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                                        <span class="text-red-600 font-semibold">${review.user.charAt(0)}</span>
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center space-x-2">
+                                            <span class="font-medium">${review.user}</span>
+                                            ${review.verified ? '<span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Verified Purchase</span>' : ''}
+                                        </div>
+                                        <div class="flex items-center space-x-2">
+                                            ${generateStarRating(review.rating)}
+                                            <span class="text-sm text-gray-500">${review.date}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-gray-700 ml-13">${review.comment}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+        }
+
+        function closeFeedback() {
+            document.getElementById('feedbackModal').classList.add('hidden');
+        }
+
+        function setRating(rating) {
+            document.getElementById('userRating').value = rating;
+            const stars = document.querySelectorAll('.rating-star');
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.textContent = '★';
+                    star.classList.add('text-yellow-400');
+                    star.classList.remove('text-gray-300');
+                } else {
+                    star.textContent = '☆';
+                    star.classList.add('text-gray-300');
+                    star.classList.remove('text-yellow-400');
+                }
+            });
+        }
+
+        function submitFeedback(event, productId) {
+            event.preventDefault();
+            
+            const rating = parseInt(document.getElementById('userRating').value);
+            const comment = document.getElementById('userComment').value.trim();
+            
+            if (!comment) {
+                showNotification('Please write a review comment');
+                return;
+            }
+            
+            // Add feedback to the product
+            if (!productFeedback[productId]) {
+                productFeedback[productId] = [];
+            }
+            
+            const newFeedback = {
+                user: currentUser.name,
+                rating: rating,
+                comment: comment,
+                date: new Date().toLocaleDateString(),
+                verified: true // Assume verified since user is logged in
+            };
+            
+            productFeedback[productId].unshift(newFeedback);
+            
+            // Update product rating (simple average)
+            const allRatings = productFeedback[productId].map(f => f.rating);
+            const avgRating = allRatings.reduce((sum, r) => sum + r, 0) / allRatings.length;
+            const product = products.find(p => p.id === productId);
+            product.rating = Math.round(avgRating * 10) / 10;
+            
+            showNotification('Review submitted successfully!');
+            showProductFeedback(productId); // Refresh the modal
+            
+            // Refresh products if currently viewing
+            if (currentSection === 'products') {
+                loadProducts();
+            }
+        }
+
+        // Page-based authentication functions
+        function handlePageSignIn(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('pageSignInEmail').value;
+            const password = document.getElementById('pageSignInPassword').value;
+            
+            // Simple validation (in real app, this would be server-side)
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                updateAuthUI();
+                showSection('home');
+                showNotification(`Welcome back, ${user.name}!`);
+            } else {
+                showNotification('Invalid email or password');
+            }
+        }
+
+        function handlePageSignUp(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('pageSignUpName').value;
+            const email = document.getElementById('pageSignUpEmail').value;
+            const phone = document.getElementById('pageSignUpPhone').value;
+            const password = document.getElementById('pageSignUpPassword').value;
+            const confirmPassword = document.getElementById('pageSignUpConfirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                showNotification('Passwords do not match');
+                return;
+            }
+            
+            // Check if user already exists
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            if (users.find(u => u.email === email)) {
+                showNotification('User with this email already exists');
+                return;
+            }
+            
+            // Create new user
+            const newUser = { name, email, phone, password, joinDate: new Date().toLocaleDateString() };
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            currentUser = newUser;
+            localStorage.setItem('currentUser', JSON.stringify(newUser));
+            updateAuthUI();
+            showSection('home');
+            showNotification(`Welcome to RedKart, ${name}!`);
+        }
+
+        // Handle order tracking on Enter key
+        document.addEventListener('DOMContentLoaded', function() {
+            const orderTrackingInput = document.getElementById('orderTrackingInput');
+            if (orderTrackingInput) {
+                orderTrackingInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        trackOrder();
+                    }
+                });
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9854736c67b889a3',t:'MTc1ODkwNzQyNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
